@@ -1,12 +1,27 @@
+
 const quoteElement = document.getElementById("quote");
 const authorElement = document.getElementById("author");
 const button = document.getElementById("new-quote");
 const statusElement = document.getElementById("status");
+const music = document.getElementById("background-music");
+
+let musicStarted = false;
 
 async function getQuote() {
     button.disabled = true;
 
+
+    if (!musicStarted) {
+        try {
+            await music.play();
+            musicStarted = true;
+        } catch (error) {
+            console.error("Could not play music:", error);
+        }
+    }
+
     try {
+
         const quoteResponse = await fetch(
             "https://dummyjson.com/quotes/random"
         );
@@ -16,6 +31,8 @@ async function getQuote() {
         }
 
         const quoteData = await quoteResponse.json();
+
+
         if (
             typeof quoteData.quote !== "string" ||
             typeof quoteData.author !== "string" ||
@@ -25,8 +42,10 @@ async function getQuote() {
             throw new Error("The quote service returned invalid data.");
         }
 
+
         quoteElement.textContent = quoteData.quote;
         authorElement.textContent = "— " + quoteData.author;
+
 
         const imageUrl =
             "https://picsum.photos/1200/800?random=" + Date.now();
@@ -35,10 +54,13 @@ async function getQuote() {
             `linear-gradient(rgba(15,23,42,0.55),` +
             `rgba(15,23,42,0.55)),` +
             `url("${imageUrl}")`;
+
         document.body.style.backgroundSize = "cover";
         document.body.style.backgroundPosition = "center";
         document.body.style.backgroundRepeat = "no-repeat";
         document.body.style.backgroundAttachment = "fixed";
+
+        statusElement.textContent = "";
 
     } catch (error) {
         console.error("Error:", error);
@@ -50,5 +72,6 @@ async function getQuote() {
         button.disabled = false;
     }
 }
+
 
 button.addEventListener("click", getQuote);
