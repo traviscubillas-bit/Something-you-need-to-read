@@ -5,7 +5,6 @@ const statusElement = document.getElementById("status");
 
 async function getQuote() {
     button.disabled = true;
-    statusElement.textContent = "Loading quote and image...";
 
     try {
         const quoteResponse = await fetch(
@@ -17,6 +16,14 @@ async function getQuote() {
         }
 
         const quoteData = await quoteResponse.json();
+        if (
+            typeof quoteData.quote !== "string" ||
+            typeof quoteData.author !== "string" ||
+            !quoteData.quote.trim() ||
+            !quoteData.author.trim()
+        ) {
+            throw new Error("The quote service returned invalid data.");
+        }
 
         quoteElement.textContent = quoteData.quote;
         authorElement.textContent = "— " + quoteData.author;
@@ -33,13 +40,11 @@ async function getQuote() {
         document.body.style.backgroundRepeat = "no-repeat";
         document.body.style.backgroundAttachment = "fixed";
 
-        statusElement.textContent = "Quote and image loaded!";
-
     } catch (error) {
         console.error("Error:", error);
 
         statusElement.textContent =
-            "Could not load quote. Please try again.";
+            "Could not fetch data. Please try again.";
 
     } finally {
         button.disabled = false;
