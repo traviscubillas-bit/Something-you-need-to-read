@@ -5,23 +5,16 @@ const button = document.getElementById("new-quote");
 const statusElement = document.getElementById("status");
 const music = document.getElementById("background-music");
 
-let musicStarted = false;
-
 async function getQuote() {
     button.disabled = true;
 
-    if (!musicStarted) {
-        music.play()
-            .then(() => {
-                musicStarted = true;
-            })
-            .catch((error) => {
-                console.error("Could not play music:", error);
-            });
+    if (music.paused) {
+        music.play().catch((error) => {
+            console.error("Could not play music:", error);
+        });
     }
 
     try {
-
         const quoteResponse = await fetch(
             "https://dummyjson.com/quotes/random"
         );
@@ -29,9 +22,7 @@ async function getQuote() {
         if (!quoteResponse.ok) {
             throw new Error("Could not load quote.");
         }
-
         const quoteData = await quoteResponse.json();
-
 
         if (
             typeof quoteData.quote !== "string" ||
@@ -42,10 +33,8 @@ async function getQuote() {
             throw new Error("The quote service returned invalid data.");
         }
 
-
         quoteElement.textContent = quoteData.quote;
         authorElement.textContent = "— " + quoteData.author;
-
 
         const imageUrl =
             "https://picsum.photos/1200/800?random=" + Date.now();
@@ -72,6 +61,5 @@ async function getQuote() {
         button.disabled = false;
     }
 }
-
 
 button.addEventListener("click", getQuote);
