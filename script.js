@@ -25,8 +25,6 @@ async function getQuote() {
             "https://picsum.photos/1200/800?random=" + Date.now();
 
         document.body.style.backgroundImage =
-            `linear-gradient(rgba(15,23,42,0.25),` +
-            `rgba(15,23,42,0.25)),` +
             `linear-gradient(rgba(15,23,42,0.55),` +
             `rgba(15,23,42,0.55)),` +
             `url("${imageUrl}")`;
