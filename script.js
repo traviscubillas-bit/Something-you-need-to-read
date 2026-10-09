@@ -10,14 +10,14 @@ let musicStarted = false;
 async function getQuote() {
     button.disabled = true;
 
-
     if (!musicStarted) {
-        try {
-            await music.play();
-            musicStarted = true;
-        } catch (error) {
-            console.error("Could not play music:", error);
-        }
+        music.play()
+            .then(() => {
+                musicStarted = true;
+            })
+            .catch((error) => {
+                console.error("Could not play music:", error);
+            });
     }
 
     try {
