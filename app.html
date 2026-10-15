@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0B0C0B">
+    <title>VERBA. — Discover a thought worth keeping</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+
+<body class="app-page">
+    <header class="site-nav app-nav">
+        <div class="wrap nav-inner">
+            <a class="brand" href="index.html" aria-label="VERBA home">VERBA<span>.</span></a>
+            <nav aria-label="Application navigation">
+                <a class="app-nav-link" href="index.html">Back to Portfolio</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <section class="app-intro wrap" aria-labelledby="app-title">
+            <p class="eyebrow"><span></span> A moment to pause</p>
+            <h1 id="app-title">Words that<br><em>stay with you.</em></h1>
+            <p class="app-intro-copy">
+                Discover a thought worth keeping. Let meaningful words offer
+                a little perspective, one quote at a time.
+            </p>
+        </section>
+
+        <section class="quote-app wrap" aria-label="Random quote generator">
+            <div class="quote-app-heading">
+                <p class="quote-kicker">A small pause in your day</p>
+                <span class="quote-ornament" aria-hidden="true">“</span>
+            </div>
+
+            <blockquote id="quote" aria-live="polite">
+                Welcome to VERBA.
+            </blockquote>
+            <p class="quote-welcome" id="quote-welcome">
+                When you’re ready, find a few words to carry with you.
+            </p>
+            <p id="author" class="quote-author" hidden></p>
+
+            <div class="quote-actions">
+                <button id="new-quote" class="quote-button" type="button">
+                    Generate First Quote
+                </button>
+                <p id="status" class="quote-status" role="status" aria-live="polite"></p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="app-footer">
+        <div class="wrap app-footer-inner">
+            <a class="footer-brand" href="index.html">VERBA<span>.</span></a>
+            <p>Words that stay with you.</p>
+            <a href="index.html">Return to the portfolio</a>
+        </div>
+    </footer>
+</body>
+</html>
