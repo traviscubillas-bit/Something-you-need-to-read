@@ -1,65 +1,83 @@
+function initializeQuoteGenerator() {
+    const configurations = [
+        {
+            buttonId: "new-quote",
+            quoteId: "quote",
+            authorId: "author",
+            statusId: "status",
+            welcomeId: "quote-welcome"
+        }
+    ];
+    const config = configurations.find(({ buttonId }) =>
+        document.getElementById(buttonId)
+    );
 
-const quoteElement = document.getElementById("quote");
-const authorElement = document.getElementById("author");
-const button = document.getElementById("new-quote");
-const statusElement = document.getElementById("status");
-const music = document.getElementById("background-music");
-
-async function getQuote() {
-    button.disabled = true;
-
-    if (music.paused) {
-        music.play().catch((error) => {
-            console.error("Could not play music:", error);
-        });
+    if (!config) {
+        return;
     }
 
-    try {
-        const quoteResponse = await fetch(
-            "https://dummyjson.com/quotes/random"
-        );
+    const { buttonId, quoteId, authorId, statusId, welcomeId } = config;
+    const button = document.getElementById(buttonId);
+    const quote = document.getElementById(quoteId);
+    const author = document.getElementById(authorId);
+    const status = document.getElementById(statusId);
+    const welcome = welcomeId
+        ? document.getElementById(welcomeId)
+        : null;
 
-        if (!quoteResponse.ok) {
-            throw new Error("Could not load quote.");
-        }
-        const quoteData = await quoteResponse.json();
-
-        if (
-            typeof quoteData.quote !== "string" ||
-            typeof quoteData.author !== "string" ||
-            !quoteData.quote.trim() ||
-            !quoteData.author.trim()
-        ) {
-            throw new Error("The quote service returned invalid data.");
-        }
-
-        quoteElement.textContent = quoteData.quote;
-        authorElement.textContent = "— " + quoteData.author;
-
-        const imageUrl =
-            "https://picsum.photos/1200/800?random=" + Date.now();
-
-        document.body.style.backgroundImage =
-            `linear-gradient(rgba(15,23,42,0.55),` +
-            `rgba(15,23,42,0.55)),` +
-            `url("${imageUrl}")`;
-
-        document.body.style.backgroundSize = "cover";
-        document.body.style.backgroundPosition = "center";
-        document.body.style.backgroundRepeat = "no-repeat";
-        document.body.style.backgroundAttachment = "fixed";
-
-        statusElement.textContent = "";
-
-    } catch (error) {
-        console.error("Error:", error);
-
-        statusElement.textContent =
-            "Could not fetch data. Please try again.";
-
-    } finally {
-        button.disabled = false;
+    if (!button || !quote || !author || !status) {
+        return;
     }
+
+    let hasGeneratedQuote = false;
+
+    button.addEventListener("click", async () => {
+        button.disabled = true;
+        status.textContent = "Finding a quote...";
+
+        try {
+            const response = await fetch(
+                "https://dummyjson.com/quotes/random"
+            );
+
+            if (!response.ok) {
+                throw new Error(
+                    `Quote request failed with status ${response.status}.`
+                );
+            }
+
+            const data = await response.json();
+            if (
+                !data ||
+                typeof data.quote !== "string" ||
+                typeof data.author !== "string" ||
+                !data.quote.trim() ||
+                !data.author.trim()
+            ) {
+                throw new Error("The quote API returned invalid data.");
+            }
+
+            quote.textContent = `“${data.quote.trim()}”`;
+            author.textContent = `— ${data.author.trim()}`;
+            author.hidden = false;
+            if (welcome) {
+                welcome.hidden = true;
+            }
+
+            hasGeneratedQuote = true;
+            button.textContent = "Another Quote";
+            status.textContent = "";
+        } catch (error) {
+            console.error("Unable to load quote:", error);
+            status.textContent =
+                "We couldn’t load a quote. Check your connection and try again.";
+        } finally {
+            button.disabled = false;
+            if (!hasGeneratedQuote) {
+                button.textContent = "Generate First Quote";
+            }
+        }
+    });
 }
 
-button.addEventListener("click", getQuote);
+initializeQuoteGenerator();
