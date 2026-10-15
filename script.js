@@ -32,12 +32,16 @@ function initializeQuoteGenerator() {
     let hasGeneratedQuote = false;
 
     button.addEventListener("click", async () => {
+        const controller = new AbortController();
+        const timeoutId = window.setTimeout(() => controller.abort(), 15000);
+
         button.disabled = true;
         status.textContent = "Finding a quote...";
 
         try {
             const response = await fetch(
-                "https://dummyjson.com/quotes/random"
+                "https://dummyjson.com/quotes/random",
+                { signal: controller.signal }
             );
 
             if (!response.ok) {
@@ -69,9 +73,11 @@ function initializeQuoteGenerator() {
             status.textContent = "";
         } catch (error) {
             console.error("Unable to load quote:", error);
-            status.textContent =
-                "We couldn’t load a quote. Check your connection and try again.";
+            status.textContent = error.name === "AbortError"
+                ? "The quote request timed out. Please try again."
+                : "We couldn’t load a quote. Check your connection and try again.";
         } finally {
+            window.clearTimeout(timeoutId);
             button.disabled = false;
             if (!hasGeneratedQuote) {
                 button.textContent = "Generate First Quote";
