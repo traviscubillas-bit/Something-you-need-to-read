@@ -21,9 +21,13 @@ function initializeQuoteGenerator() {
     const quote = document.getElementById(quoteId);
     const author = document.getElementById(authorId);
     const status = document.getElementById(statusId);
-    const welcome = welcomeId
-        ? document.getElementById(welcomeId)
-        : null;
+    let welcome;
+
+    if (welcomeId) {
+        welcome = document.getElementById(welcomeId);
+    } else {
+        welcome = null;
+    }
 
     if (!button || !quote || !author || !status) {
         return;
